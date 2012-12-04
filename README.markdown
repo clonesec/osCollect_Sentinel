@@ -5,6 +5,10 @@
 This is a sentinel/node application offering a fast search/retrieval API to the **syslog data within Sphinx and MySQL** via Nginx+Thin+Sinatra.
 
 
+***
+
+# WARNING: these installation instructions are still under development !
+
 ## Installation
 
 Note that most nodes (using elsa to collect logs) will not have the osCollect rails app installed, as it's not needed, but 
