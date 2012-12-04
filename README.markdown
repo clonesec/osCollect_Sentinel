@@ -7,6 +7,10 @@ This is a sentinel/node application offering a fast search/retrieval API to the 
 
 ## Installation
 
+Note that most nodes (using elsa to collect logs) will not have the osCollect rails app installed, as it's not needed, but 
+each node does require the sentinel software to be installed as this provides the API that allows searching and the 
+retrieval of node data.
+
 (1) ensure everything is installed on each node (i.e. where you have elsa node installed, you also need a sentinel installation):
 
 ```
