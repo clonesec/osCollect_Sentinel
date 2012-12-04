@@ -6,8 +6,11 @@ This is a sentinel/node application offering a fast search/retrieval API to the 
 
 
 ***
+***
 
 # WARNING installation instructions are incomplete!
+
+***
 
 ***
 
