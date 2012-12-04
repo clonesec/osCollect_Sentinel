@@ -7,15 +7,7 @@ This is a sentinel/node application offering a fast search/retrieval API to the 
 
 ## Installation
 
-(1) copy to an apps folder that is not within/under the oscollect folder, as
-this is a standalone app that handles search requests from oscollect, and 
-you don't want it deleted/changed on each deploy of the oscollect rails app.
-
-Note that most nodes (using elsa to collect logs) will not have the osCollect rails app installed, as it's not needed, but 
-each node does require the sentinel software to be installed as this provides the API that allows searching and the 
-retrieval of node data.
-
-ensure everything is installed on each node (i.e. where you have elsa node installed, you also need a sentinel installation):
+(1) ensure everything is installed on each node (i.e. where you have elsa node installed, you also need a sentinel installation):
 
 ```
 sudo aptitude -y install curl wget nmap nbtscan
@@ -25,6 +17,8 @@ sudo aptitude -y install autoconf automake bison build-essential flex git-core l
 ```
 sudo bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
 ```
+
+(2) add a new user:
 
 ```
 sudo adduser oscollect rvm
