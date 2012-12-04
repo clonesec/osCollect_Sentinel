@@ -7,7 +7,10 @@ This is a sentinel/node application offering a fast search/retrieval API to the 
 
 ***
 
-# WARNING: these installation instructions are still under development !
+# WARNING installation instructions are incomplete!
+
+***
+
 
 ## Installation
 
