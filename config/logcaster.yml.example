@@ -1,0 +1,18 @@
+adapter: mysql2
+encoding: utf8
+reconnect: true
+pool: 20
+socket: /var/run/mysqld/mysqld.sock
+database: syslog
+username: elsa
+password: biglog
+sphinxql_server: 127.0.0.1
+sphinxql_port: 3307
+riddle_server: 127.0.0.1
+riddle_port: 3312
+max_matches: 50
+pubsub_uri: http://some_domain_or_ip:9292/faye
+# note when using elsa node there is a 60-65 second delay before logs are indexed in sphinx,
+# so the value for "do_channels_every" should be greater than the elsa delay:
+do_channels_every: 30 # seconds
+channel_filter_time_frame: 120 # match logs within the past x seconds

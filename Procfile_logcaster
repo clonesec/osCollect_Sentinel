@@ -1,0 +1,13 @@
+# use foreman to setup Upstart for Logcaster process:
+# note: the "-a" setting may not contain underscore's
+# > rvmsudo bundle exec foreman export upstart /etc/init -a logcaster -d /home/cleesmith/apps/oscollect_sentinel -f Procfile_logcaster -u cleesmith -c logcaster=1
+# 
+# .. to start everything when server boots up do:
+# > sudo nano /etc/init/logcaster.conf
+#   ... add to top of file:
+#   start on runlevel [2345]
+# 
+# > sudo service logcaster start
+# > ps aux
+
+logcaster: bundle exec ruby logcaster.rb

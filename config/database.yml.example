@@ -1,0 +1,19 @@
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: true
+  pool: 10
+  socket: /var/run/mysqld/mysqld.sock
+  database: syslog
+  username: elsa
+  password: biglog
+  sphinxql_server: 127.0.0.1
+  sphinxql_port: 3307
+  riddle_server: 127.0.0.1
+  riddle_port: 3312
+  max_matches: 100
+  # must be set to a centralized Redis server for all nodes and osCollect:
+  redis_host: ip.of.redis.server_used_for_background_jobs
+  redis_port: 6379
+  redis_db: 5
+  node_name: willow

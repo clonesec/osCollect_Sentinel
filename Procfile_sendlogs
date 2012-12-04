@@ -1,0 +1,4 @@
+# > rvmsudo bundle exec foreman export upstart /etc/init -a sendlogs -d /home/cleesmith/apps/oscollect_sentinel -f Procfile_sendlogs -u cleesmith -c sendlogs=1
+# > sudo service sendlogs start
+
+sendlogs: bundle exec ruby sendlogs.rb
