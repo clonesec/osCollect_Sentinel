@@ -5,21 +5,7 @@
 This is a sentinel/node application offering a fast search/retrieval API to the **syslog data within Sphinx and MySQL** via Nginx+Thin+Sinatra.
 
 
-***
-***
-
-# WARNING installation instructions are incomplete!
-
-***
-
-***
-
-
 ## Installation
-
-Note that most nodes (using elsa to collect logs) will not have the osCollect rails app installed, as it's not needed, but 
-each node does require the sentinel software to be installed as this provides the API that allows searching and the 
-retrieval of node data.
 
 (1) ensure everything is installed on each node (i.e. where you have elsa node installed, you also need a sentinel installation):
 
@@ -32,56 +18,8 @@ sudo aptitude -y install autoconf automake bison build-essential flex git-core l
 sudo bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
 ```
 
-(2) add a new user:
-
-```
-sudo adduser oscollect rvm
-```
-
-... logout then login again
-
-```
-rvm --version
-rvmsudo rvm get head
-```
-
-```
-sudo nano /etc/rvmrc
-... add: rvm_trust_rvmrcs_flag=1
-```
-
-```
-rvm install ruby-1.9.3
-```
-
-```
-rvm --default use 1.9.3
-```
-
-```
-sudo nano /etc/environment
-... add:
-RAILS_ENV=production
-RACK_ENV=production
-```
-
-... logout then login again
-
-```
-echo $RAILS_ENV
-echo $RACK_ENV
-ruby -v
-gem -v
-```
-
-```
-cd ~/apps ... or whatever the sentinel user's home directory is
-gem install bundler --no-ri --no-rdoc
-gem install foreman --no-ri --no-rdoc
-gem list
-```
-
-(2) ensure the **RACK_ENV=production** is set in **~/.bashrc** and **/etc/environment**
+(2) use the same user as the osCollect web app, probably oscollect
+		also, RVM and Ruby should be, or already is, installed in the same way as the web app
 
 (3) at this point, the oscollect_sentinel app needs to be **copied to the node** (via scp, rsync, etc.), and 
 probably to the **oscollect user's home directory** ... i.e. /home/oscollect/apps/oscollect_sentinel seems appropriate
@@ -100,10 +38,6 @@ bundle install
 ```
 
 (6) use Foreman to create the Upstart oscollect_sentinel workers starting with port 9000:
-
-Note that Foreman's "-a" setting may not contain underscore's.
-
-Also, it's easier to type just **sentinel**, so the following commands leave off "oscollect_" when appropriate.
 
 ```
 rvmsudo bundle exec foreman export upstart /etc/init -a sentinel -d /home/oscollect/apps/oscollect_sentinel -u oscollect -c worker=2 -p 9000
