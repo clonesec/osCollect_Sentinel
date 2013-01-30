@@ -6,7 +6,7 @@ require 'riddle'
 require 'riddle/2.1.0'
 require 'yaml'
 require 'redis'
-require 'leaderboard'
+require 'date'
 
 def sphinx_connect
   # note: setting reconnect to true causes problems, i.e. the results vary for the same search?
@@ -44,16 +44,45 @@ rescue Exception => e
   puts "Exception:\n#{e.inspect}\n"
 end
 
-get '/log_counts_by_host' do
+get '/total_log_counts_by_host_for_this_week' do
+  # curl http://127.0.0.1:8080/total_log_counts_by_host_for_this_week
   errors = ""
   begin
+    now = Date.today
+    sunday = now - now.wday
+    start_of_week = sunday.strftime('%Y-%m-%d') + ' 00:00:00'
+    syslog.total_log_counts_by_host_for_this_week(start_of_week)
+    return {errors: errors, start_of_week: start_of_week, results: syslog.results}.to_json
+  rescue Exception => e
+    puts "\nweb.rb: get '/hostcounts' :"
+    puts "error=#{e.inspect}\n"
+    puts "backtrace=#{e.backtrace.inspect}\n"
+    errors << "error=#{e.message}\n"
+    errors << "backtrace=#{e.backtrace.inspect}\n"
+    status 422
+    return {errors: errors, results: []}.to_json
+  end
+end
+
+get '/total_log_counts_by_host' do
+  # curl http://127.0.0.1:8080/total_log_counts_by_host
+  errors = ""
+  begin
+    # require 'date'
+    # now = Date.today
+    # sunday = now - now.wday
+    # sunday.strftime('%m/%d/%Y')
+    # SELECT host_id, sum(`host_stats`.count) FROM host_stats where timestamp > '2000-12-16 00:00:00' GROUP BY host_id;
+    # SELECT host_id, sum(`host_stats`.count) as ht FROM host_stats where timestamp > '2000-12-16 00:00:00' 
+    # GROUP BY host_id ORDER BY ht desc;
     syslog.total_logs_per_host
-    node_name = settings.node_name.nil? ? 'unknown' : settings.node_name
-    # update host log counts in redis:
-    syslog.results.each do |host|
-      redis = Redis.new(host: settings.redis_host, port: settings.redis_port, db: settings.redis_db)
-      redis["oscollect:logs:node:#{node_name}:host:#{host[0]}"] = host[1]
-    end
+    # node_name = settings.node_name.nil? ? 'unknown' : settings.node_name
+    # # update host log counts in redis:
+    # syslog.results.each do |host|
+    #   redis = Redis.new(host: settings.redis_host, port: settings.redis_port, db: settings.redis_db)
+    #   redis["oscollect:logs:node:#{node_name}:host:#{host[0]}"] = host[1]
+    # end
+    # redis.quit if redis
     return {errors: errors, results: syslog.results}.to_json
   rescue Exception => e
     puts "\nweb.rb: get '/hostcounts' :"
@@ -67,16 +96,16 @@ get '/log_counts_by_host' do
 end
 
 get '/total_logs' do
+  # curl http://127.0.0.1:8080/total_logs
   errors = ""
   begin
-    # total_logs = syslog.total_logs.to_i
-    syslog.total_logs_per_host
     syslog.totals
     total = syslog.total_perm_records + syslog.total_temp_records
     # update total logs in redis:
-    redis = Redis.new(host: settings.redis_host, port: settings.redis_port, db: settings.redis_db)
-    node_name = settings.node_name.nil? ? 'unknown' : settings.node_name
-    redis["oscollect:logs:total:node:#{node_name}"] = total
+    # redis = Redis.new(host: settings.redis_host, port: settings.redis_port, db: settings.redis_db)
+    # node_name = settings.node_name.nil? ? 'unknown' : settings.node_name
+    # redis["oscollect:logs:total:node:#{node_name}"] = total
+    # redis.quit if redis
     return {errors: errors, total: total, results: []}.to_json
   rescue Exception => e
     puts "\nweb.rb: get '/counters' :"

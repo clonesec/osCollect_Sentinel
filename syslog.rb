@@ -50,43 +50,64 @@ class Syslog
   end
 
   def total_logs
-    sql = "SELECT count(*) from syslog_data.syslogs_archive_1 LIMIT 1"
-    @syslog_conn.query(sql, as: :array).map {|cnt| cnt[0]}.join('')
+    return
+    # cls: way too slow:
+    # sql = "SELECT count(*) from syslog_data.syslogs_archive_1 LIMIT 1"
+    # @syslog_conn.query(sql, as: :array).map {|cnt| cnt[0]}.join('')
+  end
+
+  def total_log_counts_by_host_for_this_week(start_of_week)
+    reset # this does @results = []
+    results = @syslog_conn.query("SELECT host_id, sum(`host_stats`.count) as ht FROM host_stats where timestamp > '#{start_of_week}' GROUP BY host_id ORDER BY ht desc;", as: :array)
+    hosts = Hash.new(0) # will keep hosts unique
+    results.each do |host|
+      hosts[host[0]] += host[1] # [0]=ip [1]=count
+    end
+    @results = hosts.to_a
+    @results
   end
 
   def total_logs_per_host
     reset # this does @results = []
-    results = []
-    # get syslog_data.syslogs_index_? table names:
-    sql = "SELECT table_name " +
-          "FROM syslog.tables t1 JOIN table_types t2 ON (t1.table_type_id=t2.id) " +
-          "WHERE t2.`table_type` = 'index'"
-    tables = @syslog_conn.query(sql, as: :array)
-    unless tables.size < 1
-      sql = ""
-      tables.each do |table|
-        sql += "SELECT host_id, count(host_id) FROM #{table[0]} GROUP BY host_id;"
-      end
-      # sql.split(';').each_with_index do |s,x|
-      #   puts "sql(#{x+1})=#{s.inspect}"
-      # end
-      results = @syslog_conn.query(sql, as: :array).map {|record| record}
-      if @syslog_conn.respond_to?(:next_result)
-        while @syslog_conn.next_result
-          @syslog_conn.store_result.each do |sr|
-            results << sr
-          end
-        end
-      end
-    end
+    results = @syslog_conn.query("SELECT host_id, sum(`host_stats`.count) as ht FROM host_stats GROUP BY host_id ORDER BY ht DESC;", as: :array)
     hosts = Hash.new(0) # will keep hosts unique
-    # tally each host, as a host may be in multiple index tables:
-    results.sort.each do |host|
-      hosts[host[0]] += host[1]
+    results.each do |host|
+      hosts[host[0]] += host[1] # [0]=ip [1]=count
     end
     @results = hosts.to_a
-    puts "@results(#{@results.class})=#{@results.inspect}"
     @results
+    # cls: way too slow:
+    # results = []
+    # # get syslog_data.syslogs_index_? table names:
+    # sql = "SELECT table_name " +
+    #       "FROM syslog.tables t1 JOIN table_types t2 ON (t1.table_type_id=t2.id) " +
+    #       "WHERE t2.`table_type` = 'index'"
+    # tables = @syslog_conn.query(sql, as: :array)
+    # unless tables.size < 1
+    #   sql = ""
+    #   tables.each do |table|
+    #     sql += "SELECT host_id, count(host_id) FROM #{table[0]} GROUP BY host_id;"
+    #   end
+    #   # sql.split(';').each_with_index do |s,x|
+    #   #   puts "sql(#{x+1})=#{s.inspect}"
+    #   # end
+    #   results = @syslog_conn.query(sql, as: :array).map {|record| record}
+    #   if @syslog_conn.respond_to?(:next_result)
+    #     while @syslog_conn.next_result
+    #       @syslog_conn.store_result.each do |sr|
+    #         results << sr
+    #       end
+    #     end
+    #   end
+    # end
+    # hosts = Hash.new(0) # will keep hosts unique
+    # # tally each host, as a host may be in multiple index tables:
+    # results.sort.each do |host|
+    #   hosts[host[0]] += host[1]
+    # end
+    # @results = hosts.to_a
+    # puts "@results(#{@results.class})=#{@results.inspect}"
+    # @results
   end
 
   def fields_for_sources
