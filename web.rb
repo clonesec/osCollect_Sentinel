@@ -44,13 +44,13 @@ rescue Exception => e
   puts "Exception:\n#{e.inspect}\n"
 end
 
-get '/weekly_log_counts_by_host/:start_time/:end_time' do
-  # curl http://127.0.0.1:8080/weekly_log_counts_by_host/1359244800/1359849599
+get '/log_counts_by_host/:start_time/:end_time' do
+  # curl http://127.0.0.1:8080/log_counts_by_host/1359244800/1359849599
   errors = ""
   begin
     start_time = Time.at(params[:start_time].to_i).utc.strftime('%Y-%m-%d %H:%M:%S')
     end_time = Time.at(params[:end_time].to_i).utc.strftime('%Y-%m-%d %H:%M:%S')
-    syslog.total_log_counts_by_host_for_week(start_time, end_time)
+    syslog.total_log_counts_by_host_for_time_period(start_time, end_time)
     return {errors: errors, results: syslog.results}.to_json
   rescue Exception => e
     puts "\nweb.rb: get '/weekly_log_counts_by_host' :"

@@ -56,7 +56,7 @@ class Syslog
     # @syslog_conn.query(sql, as: :array).map {|cnt| cnt[0]}.join('')
   end
 
-  def total_log_counts_by_host_for_week(start_time, end_time)
+  def total_log_counts_by_host_for_time_period(start_time, end_time)
     reset # this does @results = []
     results = @syslog_conn.query("SELECT host_id, sum(`host_stats`.count) as ht FROM host_stats where (timestamp >= '#{start_time}') AND (timestamp <= '#{end_time}') GROUP BY host_id ORDER BY ht desc;", as: :array)
     hosts = Hash.new(0) # will keep hosts unique
