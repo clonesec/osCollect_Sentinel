@@ -21,13 +21,18 @@ sudo bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/b
 (2) use the same user as the osCollect web app, probably oscollect
 		also, RVM and Ruby should be, or already is, installed in the same way as the web app
 
-(3) at this point, the oscollect_sentinel app needs to be **copied to the node** (via scp, rsync, etc.), and 
-probably to the **oscollect user's home directory** ... i.e. /home/oscollect/apps/oscollect_sentinel seems appropriate
+(3)
+
+```
+cd /home/oscollect/apps
+git clone git://github.com/clonesec/osCollect_Sentinel.git oscollect_sentinel
+```
+
 
 (4) ensure **.rvmrc** is using the correct gemset
 
 ```
-cd /home/oscollect/apps/apps/oscollect_sentinel
+cd /home/oscollect/apps/oscollect_sentinel
 rvm gemset name ... should be oscollect_sentinel
 ```
 
@@ -57,11 +62,19 @@ start on runlevel [2345]
 sudo service sentinel start
 ```
 
-(7) Nginx is used to load balance between the upstream sentinel Thin workers:
+(7) install Nginx
+
+```
+sudo aptitude install nginx
+```
+
+(8) Nginx is used to load balance between the upstream sentinel Thin workers
 
 ```
 sudo nano /etc/nginx/nginx.conf
 ```
+
+ensure the nginx.conf is similar to:
 
 ```
 user www-data;
@@ -154,4 +167,4 @@ worker_processes  4; ... this number should exceed or match the number of _upstr
 
 (9) repeat steps (1) thru (8) for each elsa node that's collecting logs and that you want osCollect to search/retrieve those logs
 
-Note that in the **Admin** feature of the osCollect rails web app there is a **Nodes** interface which allows you to add/edit new sentinel nodes.
+Note that in the **Admin** feature of the osCollect rails web app there is a **Inputs** interface which allows you to add/edit new sentinel nodes.
