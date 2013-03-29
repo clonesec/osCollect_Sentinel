@@ -164,6 +164,6 @@ server 127.0.0.1:9002; ... as many as needed
 worker_processes  4; ... this number should exceed or match the number of _upstream thin_cluster_ servers entered above
 ```
 
-(9) repeat steps (1) thru (8) for each elsa node that's collecting logs and that you want osCollect to search/retrieve those logs
+(9) repeat steps (1) thru (8) for each node/server that's collecting/receiving logs and that you want osCollect to search/retrieve those logs
 
 Note that in the **Admin** feature of the osCollect rails web app there is a **Inputs** interface which allows you to add/edit new sentinel nodes.
