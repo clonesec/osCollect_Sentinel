@@ -18,10 +18,9 @@ sudo aptitude -y install autoconf automake bison build-essential flex git-core l
 sudo bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
 ```
 
-(2) use the same user as the osCollect web app, probably oscollect
-		also, RVM and Ruby should be, or already is, installed in the same way as the web app
+(2) you may use the same user as the osCollect web app when installed on the same server
 
-(3)
+(3) create the sentinel app via git clone from github
 
 ```
 cd /home/oscollect/apps
